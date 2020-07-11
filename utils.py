@@ -6,7 +6,7 @@ import numpy as np
 from tensorflow import keras
 
 import config
-
+from copy import copy
 start = time.time()
 mask_detector = keras.models.load_model("models/model-best.h5")
 end = time.time() - start
@@ -39,13 +39,18 @@ def __draw_bbs(image, mask, pt1, pt2, confidence):
 
 def detect_masks(input_image, bounding_boxes):
     cropped_faces = []
+
+    # using a copy of the original image to extract the cropped faces
+    # this prevents artifacts caused by __draw_bbs e.g. "mask" or "no_mask" text overlapping on the cropped faces
+    clean_image = copy(input_image)
+
     for bb in bounding_boxes:
         # extracting coordinates
         coords = bb["box"]
         x1, y1 = coords[0], coords[1]
         x2, y2 = coords[0] + coords[2], coords[1] + coords[3]
 
-        cropped_face_raw = input_image[y1: y2, x1: x2]
+        cropped_face_raw = clean_image[y1: y2, x1: x2]
         cropped_face = image_preprocessing(input_image=cropped_face_raw)
 
         # adding channel and batch size

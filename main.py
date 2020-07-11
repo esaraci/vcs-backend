@@ -1,7 +1,8 @@
+import os
 from http import HTTPStatus
 from urllib.error import URLError
 from urllib.parse import urlparse
-from urllib.request import urlopen
+from urllib.request import Request, urlopen
 
 import cv2
 import numpy as np
@@ -75,10 +76,11 @@ def upload_url():
 
         # retrieve image
         try:
-            req = urlopen(url, timeout=5)
+            req = urlopen(Request(url, headers={"User-Agent": config.USER_AGENT}), timeout=5)
         except ValueError:
             return jsonify(status="error", message="that does not look like a valid URL."), HTTPStatus.BAD_REQUEST
-        except URLError:
+        except URLError as e:
+            print(str(e))
             return jsonify(status="error", message="that URL looks unreachable from here."), HTTPStatus.BAD_REQUEST
 
         # convert to numpy image
@@ -125,6 +127,8 @@ def upload():
         return jsonify(status="error", message="No file detected [3]"), HTTPStatus.BAD_REQUEST
 
 
-_PORT = 8080
 if __name__ == '__main__':
+
+    # if PORT does not exist, set 8080
+    _PORT = os.getenv("PORT", 8080)
     app.run(host="0.0.0.0", port=_PORT)
