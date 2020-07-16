@@ -4,7 +4,7 @@ RED = (255, 0, 0, 255)
 
 THICKNESS = 1
 
-RESIZED_DIM = (150, 150)
+RESIZED_DIM = (128, 128)
 
 ALLOWED_EXTENSIONS = ["png", "jpg", "jpeg"]
 

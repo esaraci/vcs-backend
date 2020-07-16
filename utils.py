@@ -7,16 +7,6 @@ import numpy as np
 import config
 from copy import copy
 
-import tensorflow as tf
-from tensorflow import keras
-
-start = time.time()
-mask_detector = keras.models.load_model("models/model-best-l4.h5")
-end = time.time() - start
-print(f"it took {end}s to load the model")
-
-global graph
-graph = tf.get_default_graph()
 
 
 # return preprocessed image ready for mask detector
@@ -42,7 +32,7 @@ def __draw_bbs(image, mask, pt1, pt2, confidence):
                 color=color)
 
 
-def detect_masks(input_image, bounding_boxes):
+def detect_masks(input_image, bounding_boxes, mask_detector):
     cropped_faces = []
 
     # using a copy of the original image to extract the cropped faces
