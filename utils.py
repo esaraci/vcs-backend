@@ -8,6 +8,13 @@ import config
 from copy import copy
 
 
+from keras.models import load_model
+
+start = time.time()
+mask_detector = load_model("models/model-best-l4.h5")
+end = time.time() - start
+print(f"it took {end}s to load the model")
+
 
 # return preprocessed image ready for mask detector
 def image_preprocessing(input_image):
@@ -32,7 +39,7 @@ def __draw_bbs(image, mask, pt1, pt2, confidence):
                 color=color)
 
 
-def detect_masks(input_image, bounding_boxes, mask_detector):
+def detect_masks(input_image, bounding_boxes):
     cropped_faces = []
 
     # using a copy of the original image to extract the cropped faces

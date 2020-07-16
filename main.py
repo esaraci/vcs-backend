@@ -10,7 +10,6 @@ import numpy as np
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from mtcnn import MTCNN
-from keras.models import load_model
 
 import tensorflow as tf
 
@@ -24,14 +23,6 @@ start = time.time()
 face_detector = MTCNN()
 end = time.time() - start
 print(f"it took {end}s to load MTCNN")
-
-
-start = time.time()
-mask_detector = keras.models.load_model("models/model-best-l4.h5")
-graph = tf.compat.v1.get_default_graph()
-end = time.time() - start
-print(f"it took {end}s to load the model")
-
 
 # utils functions here
 def valid_format(filename):
@@ -52,8 +43,8 @@ def process_image(np_img):
     if len(faces) != 0:
 
         # cropped faces are already base64 encoded
-        with graph.as_default():
-            processed_img, cropped_faces = utils.detect_masks(input_image=img, bounding_boxes=faces, mask_detector=mask_detector)
+        # 
+        processed_img, cropped_faces = utils.detect_masks(input_image=img, bounding_boxes=faces)
 
         original_img = utils.cv_image_to_base64(input_image=original_img)
         processed_img = utils.cv_image_to_base64(input_image=processed_img)
