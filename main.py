@@ -1,4 +1,5 @@
 import os
+import time
 from http import HTTPStatus
 from urllib.error import URLError
 from urllib.parse import urlparse
@@ -16,12 +17,6 @@ import utils
 
 app = Flask(__name__)
 CORS(app)
-
-start = time.time()
-mask_detector = keras.models.load_model("models/model-best-l4.h5")
-end = time.time() - start
-print(f"it took {end}s to load the model")
-
 
 start = time.time()
 face_detector = MTCNN()
@@ -49,7 +44,7 @@ def process_image(np_img):
     if len(faces) != 0:
 
         # cropped faces are already base64 encoded
-        processed_img, cropped_faces = utils.detect_masks(input_image=img, bounding_boxes=faces, mask_detector=mask_detector)
+        processed_img, cropped_faces = utils.detect_masks(input_image=img, bounding_boxes=faces)
 
         original_img = utils.cv_image_to_base64(input_image=original_img)
         processed_img = utils.cv_image_to_base64(input_image=processed_img)

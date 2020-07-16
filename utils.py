@@ -7,6 +7,17 @@ import numpy as np
 import config
 from copy import copy
 
+import tensorflow as tf
+from tensorflow import keras
+
+start = time.time()
+mask_detector = keras.models.load_model("models/model-best-l4.h5")
+end = time.time() - start
+print(f"it took {end}s to load the model")
+
+global graph
+graph = tf.get_default_graph()
+
 
 # return preprocessed image ready for mask detector
 def image_preprocessing(input_image):
@@ -31,7 +42,7 @@ def __draw_bbs(image, mask, pt1, pt2, confidence):
                 color=color)
 
 
-def detect_masks(input_image, bounding_boxes, mask_detector):
+def detect_masks(input_image, bounding_boxes):
     cropped_faces = []
 
     # using a copy of the original image to extract the cropped faces
@@ -51,7 +62,8 @@ def detect_masks(input_image, bounding_boxes, mask_detector):
         cropped_face = np.expand_dims(cropped_face, axis=-1)
         cropped_face = np.expand_dims(cropped_face, axis=0)
 
-        out = mask_detector.predict(cropped_face)[0]
+        with graph.as_default():
+            out = mask_detector.predict(cropped_face)[0]
 
         if out[0] > out[1]:
             mask = True
