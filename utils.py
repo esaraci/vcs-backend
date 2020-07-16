@@ -8,7 +8,7 @@ from tensorflow import keras
 import config
 from copy import copy
 start = time.time()
-mask_detector = keras.models.load_model("models/model-best.h5")
+mask_detector = keras.models.load_model("models/model-best-l4.h5")
 end = time.time() - start
 
 print(f"it took {end} to load the model")
