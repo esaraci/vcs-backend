@@ -141,5 +141,5 @@ def upload():
 if __name__ == '__main__':
 
     # if PORT does not exist, set 8080
-    _PORT = os.getenv("PORT", 8080)
+    _PORT = os.getenv("PORT", 80)
     app.run(host="0.0.0.0", port=_PORT)
